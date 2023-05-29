@@ -38,7 +38,8 @@ def _safe_makedirs(*paths):
 
 
 HGS_VERSION = "2.0.0"
-HGS_SRC = f"https://github.com/vidalt/HGS-CVRP/archive/v{HGS_VERSION}.tar.gz"
+# HGS_SRC = f"https://github.com/AnezeR/HGS-CVRP/archive/v{HGS_VERSION}.tar.gz"
+HGS_SRC = "https://github.com/AnezeR/HGS-CVRP/archive/refs/tags/Latest.tar.gz"
 
 LIB_DIR = "lib"
 BUILD_DIR = "lib/build"
