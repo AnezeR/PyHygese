@@ -37,10 +37,6 @@ def _safe_makedirs(*paths):
             pass
 
 
-HGS_VERSION = "2.0.0"
-# HGS_SRC = f"https://github.com/AnezeR/HGS-CVRP/archive/v{HGS_VERSION}.tar.gz"
-HGS_SRC = "https://github.com/AnezeR/HGS-CVRP/archive/refs/tags/Latest.tar.gz"
-
 LIB_DIR = "lib"
 BUILD_DIR = "lib/build"
 BIN_DIR = "lib/bin"
@@ -64,12 +60,12 @@ LIB_FILENAME = get_lib_filename()
 def download_build_hgs():
     _safe_makedirs(LIB_DIR)
     _safe_makedirs(BUILD_DIR)
-    hgs_src_tarball_name = "{}.tar.gz".format(HGS_VERSION)
-    hgs_src_path = pjoin(LIB_DIR, hgs_src_tarball_name)
-    urlretrieve(HGS_SRC, hgs_src_path)
-    _run(f"tar xzvf {hgs_src_tarball_name}", LIB_DIR)
+    # hgs_src_tarball_name = "{}.tar.gz".format(HGS_VERSION)
+    # hgs_src_path = pjoin(LIB_DIR, hgs_src_tarball_name)
+    # urlretrieve(HGS_SRC, hgs_src_path)
+    # _run(f"tar xzvf {hgs_src_tarball_name}", LIB_DIR)
     _run(
-        f'cmake -DCMAKE_BUILD_TYPE=Release -G "Unix Makefiles" ../HGS-CVRP-{HGS_VERSION}',
+        f'cmake -DCMAKE_BUILD_TYPE=Release -G "Unix Makefiles" ../../HGS-CVRP-2.0.0/',
         BUILD_DIR,
     )
     _run("make lib", BUILD_DIR)

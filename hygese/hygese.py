@@ -7,6 +7,8 @@ from ctypes import (
     c_int,
     c_double,
     c_char,
+    c_char_p,
+    c_ulong,
     sizeof,
     cast,
     byref,
@@ -88,12 +90,18 @@ class _SolutionRoute(Structure):
     _fields_ = [("length", c_int), ("path", c_int_p)]
 
 
+class _HistoryEntry(Structure):
+    _fields_ = [("time", c_double), ("cost", c_double)]
+
+
 class _Solution(Structure):
     _fields_ = [
         ("cost", c_double),
         ("time", c_double),
         ("n_routes", c_int),
         ("routes", POINTER(_SolutionRoute)),
+        ("n_history", c_ulong),
+        ("cost_history", POINTER(_HistoryEntry)),
     ]
 
 
@@ -110,6 +118,9 @@ class RoutingSolution:
             r = sol_ptr[0].routes[i]
             path = r.path[0 : r.length]
             self.routes.append(path)
+        self.cost_history = []
+        for i in range(sol_ptr[0].n_history):
+            self.cost_history.append((sol_ptr[0].cost_history[i].time, sol_ptr[0].cost_history[i].cost))
 
 
 class Solver:
