@@ -15,6 +15,7 @@ struct SolutionRoute
 struct HistoryEntry
 {
     double time;
+    int iter;
     double cost;
 };
 

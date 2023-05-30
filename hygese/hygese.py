@@ -91,7 +91,7 @@ class _SolutionRoute(Structure):
 
 
 class _HistoryEntry(Structure):
-    _fields_ = [("time", c_double), ("cost", c_double)]
+    _fields_ = [("time", c_double), ("iter", c_int), ("cost", c_double)]
 
 
 class _Solution(Structure):
@@ -120,7 +120,11 @@ class RoutingSolution:
             self.routes.append(path)
         self.cost_history = []
         for i in range(sol_ptr[0].n_history):
-            self.cost_history.append((sol_ptr[0].cost_history[i].time, sol_ptr[0].cost_history[i].cost))
+            self.cost_history.append((
+                sol_ptr[0].cost_history[i].time,
+                sol_ptr[0].cost_history[i].iter,
+                sol_ptr[0].cost_history[i].cost
+            ))
 
 
 class Solver:

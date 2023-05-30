@@ -43,7 +43,7 @@ Solution *prepare_solution(Population &population, Params &params)
         sol->cost_history = new HistoryEntry[cost_history.size()];
 
         for (size_t i = 0; i < cost_history.size(); ++i)
-            sol->cost_history[i] = {cost_history[i].first, cost_history[i].second};
+            sol->cost_history[i] = {std::get<0>(cost_history[i]), std::get<1>(cost_history[i]), std::get<2>(cost_history[i])};
 	}
 	else {
 		sol->cost = 0.0;

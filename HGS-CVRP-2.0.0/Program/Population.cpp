@@ -8,16 +8,16 @@ void Population::generatePopulation()
 		Individual randomIndiv(params);
 		split.generalSplit(randomIndiv, params.nbVehicles);
 		localSearch.run(randomIndiv, params.penaltyCapacity, params.penaltyDuration);
-		addIndividual(randomIndiv, true);
+		addIndividual(randomIndiv, true, 0);
 		if (!randomIndiv.eval.isFeasible && params.ran() % 2 == 0)  // Repair half of the solutions in case of infeasibility
 		{
 			localSearch.run(randomIndiv, params.penaltyCapacity*10., params.penaltyDuration*10.);
-			if (randomIndiv.eval.isFeasible) addIndividual(randomIndiv, false);
+			if (randomIndiv.eval.isFeasible) addIndividual(randomIndiv, false, 0);
 		}
 	}
 }
 
-bool Population::addIndividual(const Individual & indiv, bool updateFeasible)
+bool Population::addIndividual(const Individual & indiv, bool updateFeasible, int iter_num)
 {
 	if (updateFeasible)
 	{
@@ -56,7 +56,7 @@ bool Population::addIndividual(const Individual & indiv, bool updateFeasible)
 		if (indiv.eval.penalizedCost < bestSolutionOverall.eval.penalizedCost - MY_EPSILON)
 		{
 			bestSolutionOverall = indiv;
-			searchProgress.push_back({ clock() - params.startTime , bestSolutionOverall.eval.penalizedCost });
+			searchProgress.emplace_back( clock() - params.startTime , iter_num, bestSolutionOverall.eval.penalizedCost );
 		}
 		return true;
 	}
@@ -203,12 +203,12 @@ const Individual * Population::getBestFound()
 	else return NULL;
 }
 
-std::vector<std::pair<double, double>> Population::getCostHistory()
+std::vector<std::tuple<double, int, double>> Population::getCostHistory()
 {
-    std::vector<std::pair<double, double>> cost_history;
+    std::vector<std::tuple<double, int, double>> cost_history;
     cost_history.reserve(searchProgress.size());
-    for (std::pair<clock_t, double> state : searchProgress)
-		cost_history.emplace_back((double)state.first / (double)CLOCKS_PER_SEC, state.second);
+    for (std::tuple<clock_t, int, double> state : searchProgress)
+		cost_history.emplace_back((double)std::get<0>(state) / (double)CLOCKS_PER_SEC, std::get<1>(state),  std::get<2>(state));
     return cost_history;
 }
 
@@ -276,8 +276,8 @@ double Population::getAverageCost(const SubPopulation & pop)
 void Population::exportSearchProgress(std::string fileName, std::string instanceName)
 {
 	std::ofstream myfile(fileName);
-	for (std::pair<clock_t, double> state : searchProgress)
-		myfile << instanceName << ";" << params.ap.seed << ";" << state.second << ";" << (double)state.first / (double)CLOCKS_PER_SEC << std::endl;
+	for (std::tuple<clock_t, int, double> state : searchProgress)
+		myfile << instanceName << ";" << params.ap.seed << ";" << std::get<2>(state) << ";" << (double)std::get<0>(state) / (double)CLOCKS_PER_SEC << std::endl;
 }
 
 void Population::exportCVRPLibFormat(const Individual & indiv, std::string fileName)
