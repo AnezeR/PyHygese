@@ -48,6 +48,8 @@ Solution *prepare_solution(Population &population, Params &params)
 	else {
 		sol->cost = 0.0;
 		sol->n_routes = 0;
+        sol->n_history = 0;
+        sol->cost_history = nullptr;
 		sol->routes = nullptr;
 	}
 	return sol;
